@@ -1,22 +1,27 @@
+# Define a job named 'pages'
 pages:
-  # This tells GitLab CI this is a Pages deployment job
+  # Use a lightweight base image (alpine is often used for simple tasks)
+  image: alpine:latest
+  # Specify which Git branches will trigger the deployment
+  # 'master' is common, but change this if your default branch is 'main'
+  only:
+    - master 
+  # This stage is for deployment
   stage: deploy
-
-  # The script that runs to build/prepare the site
+  # The script defines the steps to deploy
   script:
-    # Create the public directory
+    # 1. Create a directory named 'public'
     - mkdir .public
-    # Copy all files from the project root into the temporary directory
+    # 2. Move everything from your repository root into the 'public' directory
+    #    The 'public' directory is where GitLab Pages looks for the site content
     - cp -r * .public
-    # Rename the temporary directory to 'public'
-    - mv .public public 
-
-  # Artifacts are the files the CI job produces and saves
+    # 3. Remove the temporary public directory
+    - rm -rf public
+    # 4. Rename the temporary directory to the required 'public'
+    - mv .public public
+  # Define the artifacts (files/directories) that the job produces
   artifacts:
     paths:
-      # This specifies the 'public' folder will be uploaded for Pages
+      # This is critical: GitLab Pages expects the site content to be 
+      # located inside a directory named 'public'
       - public
-
-  # Only deploy when changes are pushed to the 'main' branch
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
