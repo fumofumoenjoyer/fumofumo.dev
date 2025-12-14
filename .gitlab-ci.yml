@@ -25,3 +25,4 @@ pages:
       # This is critical: GitLab Pages expects the site content to be 
       # located inside a directory named 'public'
       - public
+      
